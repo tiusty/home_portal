@@ -1,0 +1,6 @@
+# Commit Message Guidelines
+- Keep commit messages concise and under 50 characters for the subject line
+- Use imperative mood (e.g., "Fix bug" not "Fixed bug" or "Fixes bug")
+- Focus on what changed, not why (unless critical)
+- Avoid verbose explanations in commit messages
+
