@@ -29,6 +29,8 @@ jobs:
     
     - name: Install Rust toolchain
       uses: dtolnay/rust-toolchain@stable
+      with:
+        components: clippy
     
     - name: Cache Cargo dependencies
       uses: actions/cache@v4
@@ -40,6 +42,14 @@ jobs:
           ~/.cargo/git/db/
           src-tauri/target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    
+    - name: Check formatting
+      working-directory: src-tauri
+      run: cargo fmt --check
+    
+    - name: Run clippy
+      working-directory: src-tauri
+      run: cargo clippy -- -D warnings
     
     - name: Run unit tests
       working-directory: src-tauri

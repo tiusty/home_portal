@@ -1,6 +1,9 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
 fn greet(name: &str) -> String {
+    if (true) {
+        println!("Hello, {}! You've been greeted from Rust!", name);
+    }
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
@@ -19,7 +22,10 @@ mod tests {
 
     #[test]
     fn test_greet() {
-        assert_eq!(greet("Alice"), "Hello, Alice! You've been greeted from Rust!");
+        assert_eq!(
+            greet("Alice"),
+            "Hello, Alice! You've been greeted from Rust!"
+        );
         assert_eq!(greet("Bob"), "Hello, Bob! You've been greeted from Rust!");
         assert_eq!(greet(""), "Hello, ! You've been greeted from Rust!");
     }

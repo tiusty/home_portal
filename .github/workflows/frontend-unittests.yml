@@ -26,6 +26,9 @@ jobs:
     - name: Install dependencies
       run: yarn install --frozen-lockfile
     
+    - name: Type check
+      run: yarn tsc --noEmit
+    
     - name: Run unit tests
       run: yarn test --run
 
