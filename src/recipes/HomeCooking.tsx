@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import { Recipe } from './types';
+import { Recipe, RecipePreferences } from './types';
+import { mockRecipes } from './data';
+import { defaultPreferences } from './defaultPreferences';
 import RecipeCard from './components/RecipeCard';
 import RecipeDetail from './components/RecipeDetail';
 import AddRecipe from './components/AddRecipe';
+import Preferences from './Preferences';
 
 interface HomeCookingProps {
-  recipes: Recipe[];
-  onAddRecipe: (recipe: Recipe) => void;
-  onMarkAsEaten: (recipeId: string) => void;
+  // No props needed - HomeCooking is self-contained
 }
 
-type View = 'home' | 'add' | 'detail' | 'history';
+type View = 'home' | 'add' | 'detail' | 'history' | 'preferences';
 
-export default function HomeCooking({ recipes, onAddRecipe, onMarkAsEaten }: HomeCookingProps) {
+export default function HomeCooking({}: HomeCookingProps) {
+  const [recipes, setRecipes] = useState<Recipe[]>(mockRecipes);
+  const [preferences, setPreferences] = useState<RecipePreferences>(defaultPreferences);
   const [currentView, setCurrentView] = useState<View>('home');
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
@@ -30,19 +33,37 @@ export default function HomeCooking({ recipes, onAddRecipe, onMarkAsEaten }: Hom
     setCurrentView('detail');
   };
 
-  const handleMarkAsEaten = () => {
-    if (selectedRecipe) {
-      onMarkAsEaten(selectedRecipe.id);
-      setCurrentView('home');
-      setSelectedRecipe(null);
-    }
+  const handleMarkAsEaten = (recipeId: string) => {
+    setRecipes(recipes.map(recipe => 
+      recipe.id === recipeId 
+        ? { ...recipe, dateEaten: new Date() }
+        : recipe
+    ));
+    setCurrentView('home');
+    setSelectedRecipe(null);
   };
 
   const handleAddRecipe = (recipe: Recipe) => {
-    onAddRecipe(recipe);
+    setRecipes([recipe, ...recipes]);
     setCurrentView('home');
   };
 
+  // Preferences view
+  if (currentView === 'preferences') {
+    return (
+      <Preferences
+        preferences={preferences}
+        onSave={(newPreferences) => {
+          setPreferences(newPreferences);
+          setCurrentView('home');
+        }}
+        recipes={recipes}
+        onCancel={() => setCurrentView('home')}
+      />
+    );
+  }
+
+  // Add recipe view
   if (currentView === 'add') {
     return (
       <AddRecipe
@@ -52,6 +73,7 @@ export default function HomeCooking({ recipes, onAddRecipe, onMarkAsEaten }: Hom
     );
   }
 
+  // Recipe detail view
   if (currentView === 'detail' && selectedRecipe) {
     return (
       <RecipeDetail
@@ -60,11 +82,12 @@ export default function HomeCooking({ recipes, onAddRecipe, onMarkAsEaten }: Hom
           setCurrentView('home');
           setSelectedRecipe(null);
         }}
-        onMarkAsEaten={handleMarkAsEaten}
+        onMarkAsEaten={() => handleMarkAsEaten(selectedRecipe.id)}
       />
     );
   }
 
+  // History view
   if (currentView === 'history') {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
@@ -100,13 +123,26 @@ export default function HomeCooking({ recipes, onAddRecipe, onMarkAsEaten }: Hom
     );
   }
 
+  // Home view (default)
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="max-w-7xl mx-auto p-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Home Cooking</h1>
-          <p className="text-gray-600">Discover, cook, and track your favorite recipes</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">Home Cooking</h1>
+            <p className="text-gray-600">Discover, cook, and track your favorite recipes</p>
+          </div>
+          <button
+            onClick={() => setCurrentView('preferences')}
+            className="p-3 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Preferences"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </button>
         </div>
 
         {/* Action Buttons */}
@@ -122,6 +158,16 @@ export default function HomeCooking({ recipes, onAddRecipe, onMarkAsEaten }: Hom
             className="px-6 py-3 bg-white hover:bg-gray-50 text-gray-800 font-semibold rounded-lg shadow-md hover:shadow-lg transition-all border border-gray-200"
           >
             📚 Recipe History
+          </button>
+          <button
+            onClick={() => setCurrentView('preferences')}
+            className="px-6 py-3 bg-white hover:bg-gray-50 text-gray-800 font-semibold rounded-lg shadow-md hover:shadow-lg transition-all border border-gray-200 flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Preferences
           </button>
         </div>
 
@@ -202,4 +248,3 @@ export default function HomeCooking({ recipes, onAddRecipe, onMarkAsEaten }: Hom
     </div>
   );
 }
-

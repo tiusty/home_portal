@@ -1,24 +1,11 @@
 import { useState } from 'react';
 import './App.css';
 import HomeCooking from './recipes/HomeCooking';
-import { Recipe } from './recipes/types';
-import { mockRecipes } from './recipes/data';
+
+type Tab = 'home-cooking'; // Add more tabs here as needed
 
 function App() {
-  const [recipes, setRecipes] = useState<Recipe[]>(mockRecipes);
-  const [activeTab, setActiveTab] = useState<'home-cooking'>('home-cooking');
-
-  const handleAddRecipe = (recipe: Recipe) => {
-    setRecipes([recipe, ...recipes]);
-  };
-
-  const handleMarkAsEaten = (recipeId: string) => {
-    setRecipes(recipes.map(recipe => 
-      recipe.id === recipeId 
-        ? { ...recipe, dateEaten: new Date() }
-        : recipe
-    ));
-  };
+  const [activeTab, setActiveTab] = useState<Tab>('home-cooking');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -36,20 +23,15 @@ function App() {
             >
               Home Cooking
             </button>
-            {/* Add more tabs here in the future */}
+            {/* Add more top-level tabs here in the future */}
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
       <main>
-        {activeTab === 'home-cooking' && (
-          <HomeCooking
-            recipes={recipes}
-            onAddRecipe={handleAddRecipe}
-            onMarkAsEaten={handleMarkAsEaten}
-          />
-        )}
+        {activeTab === 'home-cooking' && <HomeCooking />}
+        {/* Add more tab content here as needed */}
       </main>
     </div>
   );
