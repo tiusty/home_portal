@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Recipe, Ingredient } from '../types/recipe';
+import { Recipe, Ingredient } from '../types';
 
 interface AddRecipeProps {
   onAdd: (recipe: Recipe) => void;

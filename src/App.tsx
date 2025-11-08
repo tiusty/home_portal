@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import './App.css';
-import HomeCooking from './components/HomeCooking';
-import { Recipe } from './types/recipe';
-import { mockRecipes } from './data/mockRecipes';
+import HomeCooking from './recipes/HomeCooking';
+import { Recipe } from './recipes/types';
+import { mockRecipes } from './recipes/data';
 
 function App() {
   const [recipes, setRecipes] = useState<Recipe[]>(mockRecipes);

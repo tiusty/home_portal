@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Recipe } from '../types/recipe';
-import RecipeCard from './RecipeCard';
-import RecipeDetail from './RecipeDetail';
-import AddRecipe from './AddRecipe';
+import { Recipe } from './types';
+import RecipeCard from './components/RecipeCard';
+import RecipeDetail from './components/RecipeDetail';
+import AddRecipe from './components/AddRecipe';
 
 interface HomeCookingProps {
   recipes: Recipe[];
