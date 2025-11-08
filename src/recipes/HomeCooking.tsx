@@ -17,7 +17,7 @@ export default function HomeCooking({}: HomeCookingProps) {
   const [recipes, setRecipes] = useState<Recipe[]>(mockRecipes);
   const [preferences, setPreferences] = useState<RecipePreferences>(defaultPreferences);
   const [currentView, setCurrentView] = useState<View>('home');
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+
 
   // Get recipe of the week (most recent recipe or first one)
   const recipeOfTheWeek = recipes.length > 0 ? recipes[0] : null;

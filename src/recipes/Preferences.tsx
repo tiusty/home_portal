@@ -20,13 +20,6 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
     return Array.from(categories).sort();
   }, [recipes]);
 
-  // Get unique tags from current recipes
-  const availableTags = useMemo(() => {
-    const allTags = recipes.flatMap(recipe => recipe.tags);
-    const uniqueTags = new Set(allTags);
-    return Array.from(uniqueTags).sort();
-  }, [recipes]);
-
   useEffect(() => {
     setLocalPreferences(preferences);
     setIsDirty(false);
@@ -42,13 +35,6 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
       ? localPreferences.preferredCategories.filter(c => c !== category)
       : [...localPreferences.preferredCategories, category];
     handleChange({ preferredCategories: newCategories });
-  };
-
-  const handleTagToggle = (tag: string) => {
-    const newTags = localPreferences.dietaryTags.includes(tag)
-      ? localPreferences.dietaryTags.filter(t => t !== tag)
-      : [...localPreferences.dietaryTags, tag];
-    handleChange({ dietaryTags: newTags });
   };
 
   const handleDifficultyToggle = (difficulty: 'Easy' | 'Medium' | 'Hard') => {
@@ -167,7 +153,7 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Difficulty Levels</h2>
             <p className="text-sm text-gray-600 mb-4">
-              Select the difficulty levels you're comfortable with.
+              Select the difficulty levels you&apos;re comfortable with.
             </p>
             <div className="flex flex-wrap gap-3">
               {difficultyLevels.map((difficulty) => (
@@ -231,112 +217,6 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
                   Leave empty for no limit
                 </p>
               </div>
-            </div>
-          </div>
-
-          {/* Servings Range */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Servings Range</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Minimum Servings
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={localPreferences.servingsRange.min}
-                  onChange={(e) => handleChange({
-                    servingsRange: {
-                      ...localPreferences.servingsRange,
-                      min: parseInt(e.target.value) || 1
-                    }
-                  })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Maximum Servings
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={localPreferences.servingsRange.max}
-                  onChange={(e) => handleChange({
-                    servingsRange: {
-                      ...localPreferences.servingsRange,
-                      max: parseInt(e.target.value) || 1
-                    }
-                  })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Dietary Tags */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Dietary Preferences</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Select tags that match your dietary preferences or restrictions.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {availableTags.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => handleTagToggle(tag)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    localPreferences.dietaryTags.includes(tag)
-                      ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-            {availableTags.length === 0 && (
-              <p className="mt-4 text-sm text-gray-500">
-                No dietary tags available in current recipes
-              </p>
-            )}
-          </div>
-
-          {/* Summary */}
-          <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-            <h2 className="text-xl font-semibold text-indigo-800 mb-4">Preferences Summary</h2>
-            <div className="space-y-2 text-sm text-indigo-700">
-              <p>
-                <span className="font-medium">Meals to plan:</span> {localPreferences.numberOfMeals}
-              </p>
-              <p>
-                <span className="font-medium">Categories:</span>{' '}
-                {localPreferences.preferredCategories.length > 0
-                  ? localPreferences.preferredCategories.join(', ')
-                  : 'All categories'}
-              </p>
-              <p>
-                <span className="font-medium">Difficulty:</span>{' '}
-                {localPreferences.difficultyLevels.length > 0
-                  ? localPreferences.difficultyLevels.join(', ')
-                  : 'All levels'}
-              </p>
-              <p>
-                <span className="font-medium">Time:</span>{' '}
-                Prep: {localPreferences.maxPrepTime ? `${localPreferences.maxPrepTime} min` : 'No limit'},{' '}
-                Cook: {localPreferences.maxCookTime ? `${localPreferences.maxCookTime} min` : 'No limit'}
-              </p>
-              <p>
-                <span className="font-medium">Servings:</span>{' '}
-                {localPreferences.servingsRange.min} - {localPreferences.servingsRange.max}
-              </p>
-              <p>
-                <span className="font-medium">Dietary tags:</span>{' '}
-                {localPreferences.dietaryTags.length > 0
-                  ? localPreferences.dietaryTags.join(', ')
-                  : 'None selected'}
-              </p>
             </div>
           </div>
         </div>
