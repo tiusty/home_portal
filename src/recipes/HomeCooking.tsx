@@ -25,6 +25,10 @@ export default function HomeCooking() {
   });
   const [currentView, setCurrentView] = useState<View>('home');
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const handleDeleteRecipe = (recipeId: string) => {
+    setRecipes(recipes.filter(recipe => recipe.id !== recipeId));
+    setCurrentView('home');
+  };
 
   // Get recipe of the week (most recent recipe or first one)
   const recipeOfTheWeek = recipes.length > 0 ? recipes[0] : null;
@@ -90,6 +94,7 @@ export default function HomeCooking() {
           setSelectedRecipe(null);
         }}
         onMarkAsEaten={() => handleMarkAsEaten(selectedRecipe.id)}
+        onDelete={() => handleDeleteRecipe(selectedRecipe.id)}
       />
     );
   }

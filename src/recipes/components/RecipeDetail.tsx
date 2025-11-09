@@ -3,10 +3,11 @@ import { Recipe } from '../types';
 interface RecipeDetailProps {
   recipe: Recipe;
   onClose: () => void;
+  onDelete: () => void;
   onMarkAsEaten: () => void;
 }
 
-export default function RecipeDetail({ recipe, onClose, onMarkAsEaten }: RecipeDetailProps) {
+export default function RecipeDetail({ recipe, onClose, onDelete, onMarkAsEaten }: RecipeDetailProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
@@ -103,6 +104,12 @@ export default function RecipeDetail({ recipe, onClose, onMarkAsEaten }: RecipeD
               className="flex-1 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors"
             >
               Mark as Eaten
+            </button>
+            <button
+              onClick={onDelete}
+              className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-colors"
+            >
+              Delete
             </button>
             <button
               onClick={onClose}
