@@ -153,7 +153,7 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Difficulty Levels</h2>
             <p className="text-sm text-gray-600 mb-4">
-              Select the difficulty levels you&apos;re comfortable with.
+              Select the difficulty levels you're comfortable with.
             </p>
             <div className="flex flex-wrap gap-3">
               {difficultyLevels.map((difficulty) => (

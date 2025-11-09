@@ -1,23 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Recipe, RecipePreferences } from './types';
-import { mockRecipes } from './data';
 import { defaultPreferences } from './defaultPreferences';
 import RecipeCard from './components/RecipeCard';
 import RecipeDetail from './components/RecipeDetail';
 import AddRecipe from './components/AddRecipe';
 import Preferences from './Preferences';
 
-interface HomeCookingProps {
-  // No props needed - HomeCooking is self-contained
-}
-
 type View = 'home' | 'add' | 'detail' | 'history' | 'preferences';
 
-export default function HomeCooking({}: HomeCookingProps) {
-  const [recipes, setRecipes] = useState<Recipe[]>(mockRecipes);
+export default function HomeCooking() {
+  const [recipes, setRecipes] = useState<Recipe[]>(() => {
+    const savedRecipes = localStorage.getItem('recipes') || '[]';
+    return JSON.parse(savedRecipes);
+  });
+  useEffect(() => {
+    localStorage.setItem('recipes', JSON.stringify(recipes));
+  }, [recipes]);
   const [preferences, setPreferences] = useState<RecipePreferences>(defaultPreferences);
   const [currentView, setCurrentView] = useState<View>('home');
-
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
   // Get recipe of the week (most recent recipe or first one)
   const recipeOfTheWeek = recipes.length > 0 ? recipes[0] : null;
