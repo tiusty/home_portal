@@ -16,7 +16,13 @@ export default function HomeCooking() {
   useEffect(() => {
     localStorage.setItem('recipes', JSON.stringify(recipes));
   }, [recipes]);
-  const [preferences, setPreferences] = useState<RecipePreferences>(defaultPreferences);
+  const [preferences, setPreferences] = useState<RecipePreferences>(() => {
+    const savedPreferences = localStorage.getItem('preferences') || JSON.stringify(defaultPreferences);
+    return JSON.parse(savedPreferences);
+  });
+  useEffect(() => {
+    localStorage.setItem('preferences', JSON.stringify(preferences));
+  });
   const [currentView, setCurrentView] = useState<View>('home');
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
