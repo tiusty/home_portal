@@ -10,8 +10,12 @@ export interface Recipe {
   difficulty: 'Easy' | 'Medium' | 'Hard';
   category: string;
   imageUrl?: string;
-  dateEaten?: Date;
   tags: string[];
+}
+
+export interface ReceipeEatenEvent {
+  recipeId: string;
+  dateEaten: Date;
 }
 
 export interface Ingredient {

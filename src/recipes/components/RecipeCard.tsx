@@ -1,11 +1,13 @@
-import { Recipe } from '../types';
+import { ReceipeEatenEvent, Recipe } from '../types';
 
 interface RecipeCardProps {
   recipe: Recipe;
+  receipeEatenEvents: ReceipeEatenEvent[];
   onClick: () => void;
 }
 
-export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
+export default function RecipeCard({ recipe, receipeEatenEvents, onClick }: RecipeCardProps) {
+  const latestEatenEvent = receipeEatenEvents.find(event => event.recipeId === recipe.id);
   return (
     <div
       onClick={onClick}
@@ -27,9 +29,9 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
             {recipe.difficulty}
           </span>
         </div>
-        {recipe.dateEaten && (
+        {latestEatenEvent && (
           <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-400">
-            Eaten: {new Date(recipe.dateEaten).toLocaleDateString()}
+            Last Eaten: {new Date(latestEatenEvent.dateEaten).toLocaleDateString()}
           </div>
         )}
       </div>
