@@ -82,7 +82,7 @@ export default function AddRecipe({ onAdd, onCancel }: AddRecipeProps) {
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 
@@ -93,7 +93,7 @@ export default function AddRecipe({ onAdd, onCancel }: AddRecipeProps) {
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               rows={3}
             />
           </div>
@@ -107,7 +107,7 @@ export default function AddRecipe({ onAdd, onCancel }: AddRecipeProps) {
                 type="number"
                 value={formData.prepTime}
                 onChange={(e) => setFormData({ ...formData, prepTime: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <div>
@@ -118,7 +118,7 @@ export default function AddRecipe({ onAdd, onCancel }: AddRecipeProps) {
                 type="number"
                 value={formData.cookTime}
                 onChange={(e) => setFormData({ ...formData, cookTime: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function AddRecipe({ onAdd, onCancel }: AddRecipeProps) {
                 type="number"
                 value={formData.servings}
                 onChange={(e) => setFormData({ ...formData, servings: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
             <div>
@@ -142,7 +142,7 @@ export default function AddRecipe({ onAdd, onCancel }: AddRecipeProps) {
               <select
                 value={formData.difficulty}
                 onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as Recipe['difficulty'] })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="Easy">Easy</option>
                 <option value="Medium">Medium</option>
@@ -227,7 +227,7 @@ export default function AddRecipe({ onAdd, onCancel }: AddRecipeProps) {
               value={formData.tags}
               onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
               placeholder="healthy, quick, vegetarian"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
 

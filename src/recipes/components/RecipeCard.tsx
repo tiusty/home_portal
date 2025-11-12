@@ -9,7 +9,7 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer overflow-hidden border border-gray-200"
+      className="bg-white rounded-lg border border-gray-200 hover:border-indigo-300 cursor-pointer overflow-hidden"
     >
       {recipe.imageUrl && (
         <img
@@ -18,17 +18,17 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
           className="w-full h-48 object-cover"
         />
       )}
-      <div className="p-4">
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">{recipe.name}</h3>
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{recipe.description}</p>
-        <div className="flex items-center justify-between text-sm text-gray-500">
-          <span>{recipe.prepTime + recipe.cookTime} min</span>
-          <span className="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs">
+      <div className="p-5">
+        <h3 className="text-xl font-bold text-gray-900 mb-2">{recipe.name}</h3>
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{recipe.description}</p>
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-500">{recipe.prepTime + recipe.cookTime} min</span>
+          <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold">
             {recipe.difficulty}
           </span>
         </div>
         {recipe.dateEaten && (
-          <div className="mt-2 text-xs text-gray-400">
+          <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-400">
             Eaten: {new Date(recipe.dateEaten).toLocaleDateString()}
           </div>
         )}
@@ -36,4 +36,3 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
     </div>
   );
 }
-
