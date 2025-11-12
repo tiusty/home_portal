@@ -153,6 +153,19 @@ export default function AddRecipe({ onAdd, onCancel }: AddRecipeProps) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
+              Category
+            </label>
+            <input
+              type="text"
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              placeholder="e.g., Main Course, Dessert, Appetizer"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Ingredients *
             </label>
             {ingredients.map((ingredient, index) => (
