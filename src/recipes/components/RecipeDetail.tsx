@@ -30,15 +30,15 @@ export default function RecipeDetail({ recipe, receipeEatenEvents, onClose, onDe
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-500">Prep Time</div>
-              <div className="text-2xl font-bold text-gray-900">{recipe.prepTime} min</div>
+              <div className="text-2xl font-bold text-gray-900">{recipe.prepTimeMinutes} min</div>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-500">Cook Time</div>
-              <div className="text-2xl font-bold text-gray-900">{recipe.cookTime} min</div>
+              <div className="text-2xl font-bold text-gray-900">{recipe.cookTimeMinutes} min</div>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-500">Servings</div>
-              <div className="text-2xl font-bold text-gray-900">{recipe.servings}</div>
+              <div className="text-2xl font-bold text-gray-900">{recipe.numOfServings}</div>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-500">Difficulty</div>

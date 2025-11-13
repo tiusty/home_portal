@@ -187,11 +187,11 @@ export default function HomeCooking() {
                   <p className="text-gray-600 mb-6">{recipeOfTheWeek.description}</p>
                   <div className="grid grid-cols-3 gap-4 mb-6">
                     <div className="text-center p-4 bg-indigo-50 rounded-lg">
-                      <div className="text-2xl font-bold text-indigo-700">{recipeOfTheWeek.prepTime + recipeOfTheWeek.cookTime}</div>
+                      <div className="text-2xl font-bold text-indigo-700">{recipeOfTheWeek.prepTimeMinutes + recipeOfTheWeek.cookTimeMinutes}</div>
                       <div className="text-sm text-indigo-600 mt-1">Minutes</div>
                     </div>
                     <div className="text-center p-4 bg-indigo-50 rounded-lg">
-                      <div className="text-2xl font-bold text-indigo-700">{recipeOfTheWeek.servings}</div>
+                      <div className="text-2xl font-bold text-indigo-700">{recipeOfTheWeek.numOfServings}</div>
                       <div className="text-sm text-indigo-600 mt-1">Servings</div>
                     </div>
                     <div className="text-center p-4 bg-indigo-50 rounded-lg">

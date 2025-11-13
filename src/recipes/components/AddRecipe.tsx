@@ -52,11 +52,14 @@ export default function AddRecipe({ onAdd, onCancel }: AddRecipeProps) {
       description: formData.description,
       ingredients: ingredients.filter(i => i.name && i.amount),
       instructions: instructions.filter(i => i.trim() !== ''),
-      prepTime: parseInt(formData.prepTime) || 0,
-      cookTime: parseInt(formData.cookTime) || 0,
-      servings: parseInt(formData.servings) || 1,
+      prepTimeMinutes: parseInt(formData.prepTime) || 0,
+      cookTimeMinutes: parseInt(formData.cookTime) || 0,
+      numOfServings: parseInt(formData.servings) || 1,
       difficulty: formData.difficulty,
-      category: formData.category,
+      proteinTypes: [],
+      mealTypes: [],
+      cookingMethods: [],
+      dietaryTags: [],
       tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
     };
     onAdd(recipe);
