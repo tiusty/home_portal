@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { RecipePreferences, Recipe, MealType, availableMealTypes, availableProteinTypes, ProteinType } from './types';
+import { RecipePreferences, Recipe, MealType, availableMealTypes, availableProteinTypes, ProteinType, DifficultyLevel } from './types';
 
 interface PreferencesProps {
   preferences: RecipePreferences;
@@ -12,12 +12,6 @@ const difficultyLevels: ('Easy' | 'Medium' | 'Hard')[] = ['Easy', 'Medium', 'Har
 
 export default function Preferences({ preferences, onSave, recipes, onCancel }: PreferencesProps) {
   const [localPreferences, setLocalPreferences] = useState<RecipePreferences>(preferences);
-  console.log('localPreferences', localPreferences);
-
-  const availableCategories = useMemo(() => {
-    const categories = new Set(recipes.map(recipe => recipe.category));
-    return Array.from(categories).sort();
-  }, [recipes]);
 
   const availableTags = useMemo(() => {
     const allTags = recipes.flatMap(recipe => recipe.tags);
@@ -38,7 +32,7 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
     setLocalPreferences(prev => ({ ...prev, ...updates }));
   };
 
-  const handleDifficultyToggle = (difficulty: 'Easy' | 'Medium' | 'Hard') => {
+  const handleDifficultyToggle = (difficulty: DifficultyLevel) => {
     const newDifficulties = localPreferences.difficultyLevels.includes(difficulty)
       ? localPreferences.difficultyLevels.filter(d => d !== difficulty)
       : [...localPreferences.difficultyLevels, difficulty];

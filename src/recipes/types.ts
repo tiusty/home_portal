@@ -4,11 +4,14 @@ export interface Recipe {
   description: string;
   ingredients: Ingredient[];
   instructions: string[];
-  prepTime: number; // in minutes
-  cookTime: number; // in minutes
-  servings: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  category: string;
+  prepTimeMinutes: number;
+  cookTimeMinutes: number;
+  numOfServings: number;
+  difficulty: DifficultyLevel;
+  proteinTypes: ProteinType[];
+  mealTypes: MealType[];
+  cookingMethods: CookingMethod[];
+  dietaryTags: string[];
   imageUrl?: string;
   tags: string[];
 }
@@ -38,10 +41,12 @@ export interface RecipePreferences {
   cookingMethod: CookingMethod[];
   maxPrepTime: number | null; // in minutes, null means no limit
   maxCookTime: number | null; // in minutes, null means no limit
-  difficultyLevels: ('Easy' | 'Medium' | 'Hard')[];
+  difficultyLevels: DifficultyLevel[];
   dietaryTags: string[]; // e.g., 'vegetarian', 'healthy', etc.
 }
 
+export type DifficultyLevel = 'Easy' | 'Medium' | 'Hard';
+export const availableDifficultyLevels: DifficultyLevel[] = ['Easy', 'Medium', 'Hard'];
 export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert';
 export const availableMealTypes: MealType[] = ['breakfast', 'lunch', 'dinner', 'snack', 'dessert'];
 export type CookingMethod = 'oven' | 'stove' | 'slow cooker' | 'instant pot' | 'no bake';
