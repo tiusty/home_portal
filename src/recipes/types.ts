@@ -13,7 +13,7 @@ export interface Recipe {
   tags: string[];
 }
 
-export interface ReceipeEatenEvent {
+export interface ReceipeMadeEvent {
   recipeId: string;
   dateEaten: Date;
 }
@@ -43,5 +43,8 @@ export interface RecipePreferences {
 }
 
 export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert';
+export const availableMealTypes: MealType[] = ['breakfast', 'lunch', 'dinner', 'snack', 'dessert'];
 export type CookingMethod = 'oven' | 'stove' | 'slow cooker' | 'instant pot' | 'no bake';
+export const availableCookingMethods: CookingMethod[] = ['oven', 'stove', 'slow cooker', 'instant pot', 'no bake'];
 export type ProteinType = 'chicken' | 'beef' | 'pork' | 'fish' | 'tofu' | 'other';
+export const availableProteinTypes: ProteinType[] = ['chicken', 'beef', 'pork', 'fish', 'tofu', 'other'];

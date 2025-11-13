@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { RecipePreferences, Recipe } from './types';
+import { RecipePreferences, Recipe, MealType, availableMealTypes, availableProteinTypes, ProteinType } from './types';
 
 interface PreferencesProps {
   preferences: RecipePreferences;
@@ -43,6 +43,20 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
       ? localPreferences.difficultyLevels.filter(d => d !== difficulty)
       : [...localPreferences.difficultyLevels, difficulty];
     handleChange({ difficultyLevels: newDifficulties });
+  };
+
+  const handleMealTypeToggle = (mealType: MealType) => {
+    const newMealTypes = localPreferences.mealType.includes(mealType)
+      ? localPreferences.mealType.filter(m => m !== mealType)
+      : [...localPreferences.mealType, mealType];
+    handleChange({ mealType: newMealTypes });
+  };
+
+  const handleProteinTypeToggle = (proteinType: ProteinType) => {
+    const newProteinTypes = localPreferences.proteinType.includes(proteinType)
+      ? localPreferences.proteinType.filter(p => p !== proteinType)
+      : [...localPreferences.proteinType, proteinType];
+    handleChange({ proteinType: newProteinTypes });
   };
 
   const handleSave = () => {
@@ -173,26 +187,39 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
           </div>
 
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Meal Type</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Meal Types</h2>
             <div className="flex flex-wrap gap-3">
-              {localPreferences.mealType.map((mealType) => (
-                <button key={mealType} onClick={() => handleChange({ mealType: [...localPreferences.mealType, mealType] })} className="px-4 py-2 rounded-lg font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300">
+              {availableMealTypes.map((mealType) => (
+                <button
+                  key={mealType}
+                  onClick={() => handleMealTypeToggle(mealType)}
+                  className={`px-4 py-2 rounded-lg font-medium ${
+                    localPreferences.mealType.includes(mealType)
+                      ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                  }`}
+                >
                   {mealType}
                 </button>
               ))}
             </div>
+            {localPreferences.mealType.length === 0 && (
+              <p className="mt-4 text-sm text-amber-600">
+                No meal types selected - all meal types will be shown
+              </p>
+            )}
           </div>
 
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Food Categories</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Protein Types</h2>
             <p className="text-sm text-gray-600 mb-4">
-              Select the categories of food you prefer. Leave empty to show all categories.
+              Select the desired protein types.
             </p>
             <div className="flex flex-wrap gap-3">
-              {localPreferences.proteinType.map((proteinType) => (
+              {availableProteinTypes.map((proteinType) => (
                 <button
                   key={proteinType}
-                  onClick={() => handleChange({ proteinType: [...localPreferences.proteinType, proteinType] })}
+                  onClick={() => handleProteinTypeToggle(proteinType)}
                   className={`px-4 py-2 rounded-lg font-medium ${
                     localPreferences.proteinType.includes(proteinType)
                       ? 'bg-indigo-600 text-white hover:bg-indigo-700'
