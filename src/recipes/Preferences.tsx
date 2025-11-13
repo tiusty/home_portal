@@ -51,6 +51,13 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
     handleChange({ proteinType: newProteinTypes });
   };
 
+  const handleDietaryTagToggle = (tag: string) => {
+    const newTags = localPreferences.dietaryTags.includes(tag)
+      ? localPreferences.dietaryTags.filter(t => t !== tag)
+      : [...localPreferences.dietaryTags, tag];
+    handleChange({ dietaryTags: newTags });
+  };
+
   const handleSave = () => {
     onSave(localPreferences);
   };
@@ -308,7 +315,7 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
               {availableTags.map((tag) => (
                 <button
                   key={tag}
-                  onClick={() => handleChange({ dietaryTags: [...localPreferences.dietaryTags, tag] })}
+                  onClick={() => handleDietaryTagToggle(tag)}
                   className={`px-4 py-2 rounded-lg font-medium ${
                     localPreferences.dietaryTags.includes(tag)
                       ? 'bg-indigo-600 text-white hover:bg-indigo-700'
