@@ -52,11 +52,14 @@ export default function AddRecipe({ onAdd, onCancel }: AddRecipeProps) {
       description: formData.description,
       ingredients: ingredients.filter(i => i.name && i.amount),
       instructions: instructions.filter(i => i.trim() !== ''),
-      prepTime: parseInt(formData.prepTime) || 0,
-      cookTime: parseInt(formData.cookTime) || 0,
-      servings: parseInt(formData.servings) || 1,
+      prepTimeMinutes: parseInt(formData.prepTime) || 0,
+      cookTimeMinutes: parseInt(formData.cookTime) || 0,
+      numOfServings: parseInt(formData.servings) || 1,
       difficulty: formData.difficulty,
-      category: formData.category,
+      proteinTypes: [],
+      mealTypes: [],
+      cookingMethods: [],
+      dietaryTags: [],
       tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
     };
     onAdd(recipe);
@@ -149,6 +152,19 @@ export default function AddRecipe({ onAdd, onCancel }: AddRecipeProps) {
                 <option value="Hard">Hard</option>
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Category
+            </label>
+            <input
+              type="text"
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              placeholder="e.g., Main Course, Dessert, Appetizer"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
           </div>
 
           <div>

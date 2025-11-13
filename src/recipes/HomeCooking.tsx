@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Recipe, RecipePreferences } from './types';
+import { Recipe, RecipePreferences, ReceipeMadeEvent } from './types';
 import { defaultPreferences } from './defaultPreferences';
 import RecipeCard from './components/RecipeCard';
 import RecipeDetail from './components/RecipeDetail';
@@ -25,6 +25,14 @@ export default function HomeCooking() {
   }, [preferences]);
   const [currentView, setCurrentView] = useState<View>('home');
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+
+  const [receipeEatenEvents, setReceipeEatenEvents] = useState<ReceipeMadeEvent[]>(() => {
+    const savedReceipeEatenEvents = localStorage.getItem('receipeEatenEvents') || '[]';
+    return JSON.parse(savedReceipeEatenEvents);
+  });
+  useEffect(() => {
+    localStorage.setItem('receipeEatenEvents', JSON.stringify(receipeEatenEvents));
+  }, [receipeEatenEvents]);
   
   const handleDeleteRecipe = (recipeId: string) => {
     setRecipes(recipes.filter(recipe => recipe.id !== recipeId));
@@ -33,10 +41,7 @@ export default function HomeCooking() {
 
   const recipeOfTheWeek = recipes.length > 0 ? recipes[0] : null;
 
-  const eatenRecipes = recipes.filter(r => r.dateEaten).sort((a, b) => {
-    if (!a.dateEaten || !b.dateEaten) return 0;
-    return new Date(b.dateEaten).getTime() - new Date(a.dateEaten).getTime();
-  });
+  const eatenRecipes = recipes.filter(r => receipeEatenEvents.some(event => event.recipeId === r.id));
 
   const handleRecipeClick = (recipe: Recipe) => {
     setSelectedRecipe(recipe);
@@ -44,11 +49,7 @@ export default function HomeCooking() {
   };
 
   const handleMarkAsEaten = (recipeId: string) => {
-    setRecipes(recipes.map(recipe => 
-      recipe.id === recipeId 
-        ? { ...recipe, dateEaten: new Date() }
-        : recipe
-    ));
+    setReceipeEatenEvents([...receipeEatenEvents, { recipeId, dateEaten: new Date() }]);
     setCurrentView('home');
     setSelectedRecipe(null);
   };
@@ -85,6 +86,7 @@ export default function HomeCooking() {
     return (
       <RecipeDetail
         recipe={selectedRecipe}
+        receipeEatenEvents={receipeEatenEvents}
         onClose={() => {
           setCurrentView('home');
           setSelectedRecipe(null);
@@ -124,6 +126,7 @@ export default function HomeCooking() {
                 <RecipeCard
                   key={recipe.id}
                   recipe={recipe}
+                  receipeEatenEvents={receipeEatenEvents}
                   onClick={() => handleRecipeClick(recipe)}
                 />
               ))}
@@ -184,11 +187,11 @@ export default function HomeCooking() {
                   <p className="text-gray-600 mb-6">{recipeOfTheWeek.description}</p>
                   <div className="grid grid-cols-3 gap-4 mb-6">
                     <div className="text-center p-4 bg-indigo-50 rounded-lg">
-                      <div className="text-2xl font-bold text-indigo-700">{recipeOfTheWeek.prepTime + recipeOfTheWeek.cookTime}</div>
+                      <div className="text-2xl font-bold text-indigo-700">{recipeOfTheWeek.prepTimeMinutes + recipeOfTheWeek.cookTimeMinutes}</div>
                       <div className="text-sm text-indigo-600 mt-1">Minutes</div>
                     </div>
                     <div className="text-center p-4 bg-indigo-50 rounded-lg">
-                      <div className="text-2xl font-bold text-indigo-700">{recipeOfTheWeek.servings}</div>
+                      <div className="text-2xl font-bold text-indigo-700">{recipeOfTheWeek.numOfServings}</div>
                       <div className="text-sm text-indigo-600 mt-1">Servings</div>
                     </div>
                     <div className="text-center p-4 bg-indigo-50 rounded-lg">
@@ -234,6 +237,7 @@ export default function HomeCooking() {
                 <RecipeCard
                   key={recipe.id}
                   recipe={recipe}
+                  receipeEatenEvents={receipeEatenEvents}
                   onClick={() => handleRecipeClick(recipe)}
                 />
               ))}

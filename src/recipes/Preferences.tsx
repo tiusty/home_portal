@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { RecipePreferences, Recipe } from './types';
+import { RecipePreferences, Recipe, MealType, availableMealTypes, availableProteinTypes, ProteinType, DifficultyLevel, availableDifficultyLevels } from './types';
 
 interface PreferencesProps {
   preferences: RecipePreferences;
@@ -8,16 +8,8 @@ interface PreferencesProps {
   onCancel?: () => void;
 }
 
-const difficultyLevels: ('Easy' | 'Medium' | 'Hard')[] = ['Easy', 'Medium', 'Hard'];
-
 export default function Preferences({ preferences, onSave, recipes, onCancel }: PreferencesProps) {
   const [localPreferences, setLocalPreferences] = useState<RecipePreferences>(preferences);
-  const [isDirty, setIsDirty] = useState(false);
-
-  const availableCategories = useMemo(() => {
-    const categories = new Set(recipes.map(recipe => recipe.category));
-    return Array.from(categories).sort();
-  }, [recipes]);
 
   const availableTags = useMemo(() => {
     const allTags = recipes.flatMap(recipe => recipe.tags);
@@ -25,45 +17,53 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
     return Array.from(uniqueTags).sort();
   }, [recipes]);
 
+  const isDirty = useMemo(() => {
+    return JSON.stringify(preferences) !== JSON.stringify(localPreferences);
+  }, [preferences, localPreferences]);
+
+
   useEffect(() => {
     setLocalPreferences(preferences);
-    setIsDirty(false);
   }, [preferences]);
 
   const handleChange = (updates: Partial<RecipePreferences>) => {
     setLocalPreferences(prev => ({ ...prev, ...updates }));
-    setIsDirty(true);
   };
 
-  const handleCategoryToggle = (category: string) => {
-    const newCategories = localPreferences.preferredCategories.includes(category)
-      ? localPreferences.preferredCategories.filter(c => c !== category)
-      : [...localPreferences.preferredCategories, category];
-    handleChange({ preferredCategories: newCategories });
-  };
-
-  const handleTagToggle = (tag: string) => {
-    const newTags = localPreferences.dietaryTags.includes(tag)
-      ? localPreferences.dietaryTags.filter(t => t !== tag)
-      : [...localPreferences.dietaryTags, tag];
-    handleChange({ dietaryTags: newTags });
-  };
-
-  const handleDifficultyToggle = (difficulty: 'Easy' | 'Medium' | 'Hard') => {
+  const handleDifficultyToggle = (difficulty: DifficultyLevel) => {
     const newDifficulties = localPreferences.difficultyLevels.includes(difficulty)
       ? localPreferences.difficultyLevels.filter(d => d !== difficulty)
       : [...localPreferences.difficultyLevels, difficulty];
     handleChange({ difficultyLevels: newDifficulties });
   };
 
+  const handleMealTypeToggle = (mealType: MealType) => {
+    const newMealTypes = localPreferences.mealType.includes(mealType)
+      ? localPreferences.mealType.filter(m => m !== mealType)
+      : [...localPreferences.mealType, mealType];
+    handleChange({ mealType: newMealTypes });
+  };
+
+  const handleProteinTypeToggle = (proteinType: ProteinType) => {
+    const newProteinTypes = localPreferences.proteinType.includes(proteinType)
+      ? localPreferences.proteinType.filter(p => p !== proteinType)
+      : [...localPreferences.proteinType, proteinType];
+    handleChange({ proteinType: newProteinTypes });
+  };
+
+  const handleDietaryTagToggle = (tag: string) => {
+    const newTags = localPreferences.dietaryTags.includes(tag)
+      ? localPreferences.dietaryTags.filter(t => t !== tag)
+      : [...localPreferences.dietaryTags, tag];
+    handleChange({ dietaryTags: newTags });
+  };
+
   const handleSave = () => {
     onSave(localPreferences);
-    setIsDirty(false);
   };
 
   const handleReset = () => {
     setLocalPreferences(preferences);
-    setIsDirty(false);
   };
 
   const handleCancel = () => {
@@ -72,11 +72,14 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
       if (!confirmed) return;
     }
     setLocalPreferences(preferences);
-    setIsDirty(false);
     if (onCancel) {
       onCancel();
     }
   };
+
+  const acceptableExtraServings = useMemo(() => {
+    return localPreferences.numOfServingsPerWeek.max - localPreferences.numOfServingsPerWeek.min;
+  }, [localPreferences.numOfServingsPerWeek]);
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -132,39 +135,103 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
                 type="number"
                 min="1"
                 max="21"
-                value={localPreferences.numberOfMeals}
-                onChange={(e) => handleChange({ numberOfMeals: parseInt(e.target.value) || 1 })}
+                value={localPreferences.numberOfReceipesPerWeek}
+                onChange={(e) => handleChange({ numberOfReceipesPerWeek: parseInt(e.target.value) || 1 })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
               <p className="mt-2 text-sm text-gray-500">
-                How many meals would you like to plan? (1-21)
+                How many recipes would you like to plan for this week? 
               </p>
             </div>
           </div>
 
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Food Categories</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Select the categories of food you prefer. Leave empty to show all categories.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Servings For the Week</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Number of Servings to make
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={localPreferences.numOfServingsPerWeek.min}
+                  onChange={(e) => handleChange({
+                    numOfServingsPerWeek: {
+                      ...localPreferences.numOfServingsPerWeek,
+                      min: parseInt(e.target.value) || 1
+                    }
+                  })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Acceptable extra servings
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={acceptableExtraServings}
+                  onChange={(e) => handleChange({
+                    numOfServingsPerWeek: {
+                      ...localPreferences.numOfServingsPerWeek,
+                      max: localPreferences.numOfServingsPerWeek.min + parseInt(e.target.value) || 1
+                    }
+                  })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Meal Types</h2>
             <div className="flex flex-wrap gap-3">
-              {availableCategories.map((category) => (
+              {availableMealTypes.map((mealType: MealType) => (
                 <button
-                  key={category}
-                  onClick={() => handleCategoryToggle(category)}
+                  key={mealType}
+                  onClick={() => handleMealTypeToggle(mealType)}
                   className={`px-4 py-2 rounded-lg font-medium ${
-                    localPreferences.preferredCategories.includes(category)
+                    localPreferences.mealType.includes(mealType)
                       ? 'bg-indigo-600 text-white hover:bg-indigo-700'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
                   }`}
                 >
-                  {category}
+                  {mealType}
                 </button>
               ))}
             </div>
-            {localPreferences.preferredCategories.length === 0 && (
+            {localPreferences.mealType.length === 0 && (
               <p className="mt-4 text-sm text-amber-600">
-                No categories selected - all categories will be shown
+                No meal types selected - all meal types will be shown
+              </p>
+            )}
+          </div>
+
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Protein Types</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              Select the desired protein types.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {availableProteinTypes.map((proteinType: ProteinType) => (
+                <button
+                  key={proteinType}
+                  onClick={() => handleProteinTypeToggle(proteinType)}
+                  className={`px-4 py-2 rounded-lg font-medium ${
+                    localPreferences.proteinType.includes(proteinType)
+                      ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                  }`}
+                >
+                  {proteinType}
+                </button>
+              ))}
+            </div>
+            {localPreferences.proteinType.length === 0 && (
+              <p className="mt-4 text-sm text-amber-600">
+                No protein types selected - all protein types will be shown
               </p>
             )}
           </div>
@@ -175,7 +242,7 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
               Select the difficulty levels you're comfortable with.
             </p>
             <div className="flex flex-wrap gap-3">
-              {difficultyLevels.map((difficulty) => (
+              {availableDifficultyLevels.map((difficulty: DifficultyLevel) => (
                 <button
                   key={difficulty}
                   onClick={() => handleDifficultyToggle(difficulty)}
@@ -238,45 +305,6 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
             </div>
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Servings Range</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Minimum Servings
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={localPreferences.servingsRange.min}
-                  onChange={(e) => handleChange({
-                    servingsRange: {
-                      ...localPreferences.servingsRange,
-                      min: parseInt(e.target.value) || 1
-                    }
-                  })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Maximum Servings
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  value={localPreferences.servingsRange.max}
-                  onChange={(e) => handleChange({
-                    servingsRange: {
-                      ...localPreferences.servingsRange,
-                      max: parseInt(e.target.value) || 1
-                    }
-                  })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
-            </div>
-          </div>
 
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Dietary Preferences</h2>
@@ -287,7 +315,7 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
               {availableTags.map((tag) => (
                 <button
                   key={tag}
-                  onClick={() => handleTagToggle(tag)}
+                  onClick={() => handleDietaryTagToggle(tag)}
                   className={`px-4 py-2 rounded-lg font-medium ${
                     localPreferences.dietaryTags.includes(tag)
                       ? 'bg-indigo-600 text-white hover:bg-indigo-700'
@@ -298,48 +326,13 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
                 </button>
               ))}
             </div>
-            {availableTags.length === 0 && (
+            {localPreferences.dietaryTags.length === 0 && (
               <p className="mt-4 text-sm text-gray-500">
                 No dietary tags available in current recipes
               </p>
             )}
           </div>
 
-          <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-            <h2 className="text-xl font-bold text-indigo-900 mb-4">Preferences Summary</h2>
-            <div className="space-y-2 text-sm text-indigo-700">
-              <p>
-                <span className="font-medium">Meals to plan:</span> {localPreferences.numberOfMeals}
-              </p>
-              <p>
-                <span className="font-medium">Categories:</span>{' '}
-                {localPreferences.preferredCategories.length > 0
-                  ? localPreferences.preferredCategories.join(', ')
-                  : 'All categories'}
-              </p>
-              <p>
-                <span className="font-medium">Difficulty:</span>{' '}
-                {localPreferences.difficultyLevels.length > 0
-                  ? localPreferences.difficultyLevels.join(', ')
-                  : 'All levels'}
-              </p>
-              <p>
-                <span className="font-medium">Time:</span>{' '}
-                Prep: {localPreferences.maxPrepTime ? `${localPreferences.maxPrepTime} min` : 'No limit'},{' '}
-                Cook: {localPreferences.maxCookTime ? `${localPreferences.maxCookTime} min` : 'No limit'}
-              </p>
-              <p>
-                <span className="font-medium">Servings:</span>{' '}
-                {localPreferences.servingsRange.min} - {localPreferences.servingsRange.max}
-              </p>
-              <p>
-                <span className="font-medium">Dietary tags:</span>{' '}
-                {localPreferences.dietaryTags.length > 0
-                  ? localPreferences.dietaryTags.join(', ')
-                  : 'None selected'}
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

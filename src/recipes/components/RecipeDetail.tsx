@@ -1,13 +1,15 @@
-import { Recipe } from '../types';
+import { ReceipeMadeEvent, Recipe } from '../types';
 
 interface RecipeDetailProps {
   recipe: Recipe;
+  receipeEatenEvents: ReceipeMadeEvent[];
   onClose: () => void;
   onDelete: () => void;
   onMarkAsEaten: () => void;
 }
 
-export default function RecipeDetail({ recipe, onClose, onDelete, onMarkAsEaten }: RecipeDetailProps) {
+export default function RecipeDetail({ recipe, receipeEatenEvents, onClose, onDelete, onMarkAsEaten }: RecipeDetailProps) {
+  const latestEatenEvent = receipeEatenEvents.find(event => event.recipeId === recipe.id);
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
@@ -28,15 +30,15 @@ export default function RecipeDetail({ recipe, onClose, onDelete, onMarkAsEaten 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-500">Prep Time</div>
-              <div className="text-2xl font-bold text-gray-900">{recipe.prepTime} min</div>
+              <div className="text-2xl font-bold text-gray-900">{recipe.prepTimeMinutes} min</div>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-500">Cook Time</div>
-              <div className="text-2xl font-bold text-gray-900">{recipe.cookTime} min</div>
+              <div className="text-2xl font-bold text-gray-900">{recipe.cookTimeMinutes} min</div>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-500">Servings</div>
-              <div className="text-2xl font-bold text-gray-900">{recipe.servings}</div>
+              <div className="text-2xl font-bold text-gray-900">{recipe.numOfServings}</div>
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="text-sm text-gray-500">Difficulty</div>
@@ -88,6 +90,13 @@ export default function RecipeDetail({ recipe, onClose, onDelete, onMarkAsEaten 
                   </span>
                 ))}
               </div>
+            </div>
+          )}
+
+          {latestEatenEvent && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Last Eaten</h3>
+              <div className="text-gray-600">{new Date(latestEatenEvent.dateEaten).toLocaleDateString()}</div>
             </div>
           )}
 
