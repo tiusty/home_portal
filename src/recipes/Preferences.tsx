@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { RecipePreferences, Recipe, MealType, availableMealTypes, availableProteinTypes, ProteinType, DifficultyLevel } from './types';
+import { RecipePreferences, Recipe, MealType, availableMealTypes, availableProteinTypes, ProteinType, DifficultyLevel, availableDifficultyLevels } from './types';
 
 interface PreferencesProps {
   preferences: RecipePreferences;
@@ -7,8 +7,6 @@ interface PreferencesProps {
   recipes: Recipe[];
   onCancel?: () => void;
 }
-
-const difficultyLevels: ('Easy' | 'Medium' | 'Hard')[] = ['Easy', 'Medium', 'Hard'];
 
 export default function Preferences({ preferences, onSave, recipes, onCancel }: PreferencesProps) {
   const [localPreferences, setLocalPreferences] = useState<RecipePreferences>(preferences);
@@ -183,7 +181,7 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Meal Types</h2>
             <div className="flex flex-wrap gap-3">
-              {availableMealTypes.map((mealType) => (
+              {availableMealTypes.map((mealType: MealType) => (
                 <button
                   key={mealType}
                   onClick={() => handleMealTypeToggle(mealType)}
@@ -210,7 +208,7 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
               Select the desired protein types.
             </p>
             <div className="flex flex-wrap gap-3">
-              {availableProteinTypes.map((proteinType) => (
+              {availableProteinTypes.map((proteinType: ProteinType) => (
                 <button
                   key={proteinType}
                   onClick={() => handleProteinTypeToggle(proteinType)}
@@ -237,7 +235,7 @@ export default function Preferences({ preferences, onSave, recipes, onCancel }: 
               Select the difficulty levels you're comfortable with.
             </p>
             <div className="flex flex-wrap gap-3">
-              {difficultyLevels.map((difficulty) => (
+              {availableDifficultyLevels.map((difficulty: DifficultyLevel) => (
                 <button
                   key={difficulty}
                   onClick={() => handleDifficultyToggle(difficulty)}
